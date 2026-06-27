@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && gh-pages -d dist -r https://github.com/qqx16/embodied-quiz.git"
+    "deploy": "vite build && gh-pages -d dist -r https://github.com/qqx16/embodied-quiz.git",
+    "update": "powershell -ExecutionPolicy Bypass -File deploy.ps1"
   },
   "dependencies": {
     "mammoth": "^1.12.0",
