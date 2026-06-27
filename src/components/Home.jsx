@@ -37,25 +37,21 @@ export default function Home({ total, examSize, passScore, wrongCount, favCount,
         <p className="home-subtitle">刷题训练</p>
         <div className="home-section">
           <div className="home-section-title">📝 刷题训练</div>
+          <div className="home-bank-info">
+            <span>题库 {total} 题</span>
+            <span className="home-bank-progress">已刷 {doneCount}/{total}</span>
+          </div>
           <button className="btn btn-primary btn-start" onClick={onStart}>
-            开始答题（{examSize}题随机）
+            📝 模拟答题（{examSize}题随机）
+          </button>
+          <button className="btn btn-qbank" onClick={onQuestionBank}>
+            📚 刷题库
           </button>
           <button className="btn btn-wrong" onClick={onWrongExam} disabled={wrongCount === 0}>
             🔄 错题重练（{wrongCount} 题）
           </button>
           <button className="btn btn-fav-exam" onClick={onFavorites} disabled={favCount === 0}>
             ⭐ 收藏夹（{favCount} 题）
-          </button>
-        </div>
-
-        <div className="home-section">
-          <div className="home-section-title">📚 题库浏览</div>
-          <div className="home-bank-info">
-            <span>题库共 {total} 题</span>
-            <span className="home-bank-progress">已刷 {doneCount}/{total}</span>
-          </div>
-          <button className="btn btn-qbank" onClick={onQuestionBank}>
-            浏览全部题目
           </button>
         </div>
 
