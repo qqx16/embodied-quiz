@@ -24,18 +24,14 @@ export default function Practice({ total, examSize, wrongCount, favCount, doneCo
           </button>
         </div>
 
-        <div style={{ marginTop: 12 }}>
-          <button className="btn btn-secondary" onClick={onHome} style={{ width: '100%' }}>
+        <button className="btn btn-secondary" onClick={onHome}>
             ← 返回首页
           </button>
-        </div>
 
         {wrongCount > 0 && (
-          <div style={{ marginTop: 8, textAlign: 'center' }}>
-            <button className="btn btn-reset-wrong" onClick={onResetWrong} title="清空所有错题记录">
-              🗑️ 重置错题
-            </button>
-          </div>
+          <button className="btn btn-reset-wrong" onClick={onResetWrong} title="清空所有错题记录" style={{ marginTop: 8 }}>
+            🗑️ 重置错题
+          </button>
         )}
       </div>
     </div>

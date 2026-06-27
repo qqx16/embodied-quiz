@@ -316,7 +316,14 @@ body {
   text-transform: uppercase;
   letter-spacing: .5px;
 }
-.home-section .btn { margin-top: 8px; }
+.home-section .btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 24px;
+  font-size: .95rem;
+  border-radius: var(--radius);
+  box-sizing: border-box;
+}
 .home-section .btn:first-of-type { margin-top: 0; }
 
 .home-bank-info {
@@ -327,6 +334,16 @@ body {
   margin-bottom: 4px;
 }
 .home-bank-progress { font-weight: 700; color: var(--color-primary); }
+
+/* Full-width home buttons */
+.home-card > .btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 24px;
+  font-size: .95rem;
+  box-sizing: border-box;
+}
+.home-card > .btn:first-of-type { margin-top: 0; }
 
 /* ========================================
    Exam Page

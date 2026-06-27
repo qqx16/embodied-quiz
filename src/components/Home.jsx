@@ -42,10 +42,10 @@ export default function Home({ total, doneCount, historyCount, onPractice, onQue
         <button className="btn btn-primary btn-start" onClick={onPractice}>
           📝 刷题训练
         </button>
-        <button className="btn btn-qbank" onClick={onQuestionBank} style={{ marginTop: 12 }}>
+        <button className="btn btn-qbank" onClick={onQuestionBank}>
           📚 浏览题库
         </button>
-        <button className="btn btn-secondary" onClick={onHistory} style={{ marginTop: 12 }}>
+        <button className="btn btn-secondary" onClick={onHistory}>
           📊 历史成绩{historyCount > 0 ? `（${historyCount}次）` : ''}
         </button>
         <div className="home-data-mgmt">
