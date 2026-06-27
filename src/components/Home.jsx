@@ -35,40 +35,42 @@ export default function Home({ total, examSize, passScore, wrongCount, favCount,
       <div className="home-card">
         <h1 className="home-title">赛道二 具身智能数据采集与处理</h1>
         <p className="home-subtitle">刷题训练</p>
-        <div className="home-info">
-          <div className="info-item">
-            <span className="info-icon">📝</span>
-            <span>题库共 {total} 题（抽 {examSize} 题）</span>
-          </div>
-          <div className="info-item">
-            <span className="info-icon">📊</span>
-            <span>已刷 {doneCount}/{total} 题</span>
-          </div>
-          <div className="info-item">
-            <span className="info-icon">💯</span>
-            <span>满分 100 分 · 及格 {passScore}</span>
-          </div>
-        </div>
-        <button className="btn btn-primary btn-start" onClick={onStart}>
-          开始答题（{examSize}题）
-        </button>
-        <button className="btn btn-qbank" onClick={onQuestionBank} style={{ marginTop: 12 }}>
-          📚 题库浏览
-        </button>
-        <button className="btn btn-wrong" onClick={onWrongExam} style={{ marginTop: 12 }} disabled={wrongCount === 0}>
-          🔄 错题重练（{wrongCount} 题）
-        </button>
-        <button className="btn btn-fav-exam" onClick={onFavorites} style={{ marginTop: 12 }} disabled={favCount === 0}>
-          ⭐ 收藏夹（{favCount} 题）
-        </button>
-        <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
-          <button className="btn btn-secondary" onClick={onHistory} style={{ flex: 1 }}>
-            📊 历史成绩{historyCount > 0 ? `（${historyCount}次）` : ''}
+        <div className="home-section">
+          <div className="home-section-title">📝 刷题训练</div>
+          <button className="btn btn-primary btn-start" onClick={onStart}>
+            开始答题（{examSize}题随机）
           </button>
-          <button className="btn btn-reset-wrong" onClick={onResetWrong} title="清空所有错题记录" disabled={wrongCount === 0}>
+          <button className="btn btn-wrong" onClick={onWrongExam} disabled={wrongCount === 0}>
+            🔄 错题重练（{wrongCount} 题）
+          </button>
+          <button className="btn btn-fav-exam" onClick={onFavorites} disabled={favCount === 0}>
+            ⭐ 收藏夹（{favCount} 题）
+          </button>
+        </div>
+
+        <div className="home-section">
+          <div className="home-section-title">📚 题库浏览</div>
+          <div className="home-bank-info">
+            <span>题库共 {total} 题</span>
+            <span className="home-bank-progress">已刷 {doneCount}/{total}</span>
+          </div>
+          <button className="btn btn-qbank" onClick={onQuestionBank}>
+            浏览全部题目
+          </button>
+        </div>
+
+        <div className="home-section">
+          <div className="home-section-title">📊 记录</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-secondary" onClick={onHistory} style={{ flex: 1 }}>
+              历史成绩{historyCount > 0 ? `（${historyCount}次）` : ''}
+            </button>
+            <button className="btn btn-reset-wrong" onClick={onResetWrong} title="清空所有错题记录" disabled={wrongCount === 0}>
               🗑️ 重置错题
             </button>
+          </div>
         </div>
+
         {/* 数据导入导出 */}
         <div className="home-data-mgmt">
           <button className="btn-data" onClick={handleExport}>
