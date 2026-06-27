@@ -34,7 +34,7 @@ export default function Home({ total, doneCount, historyCount, onPractice, onQue
     <div className="home-page">
       <div className="home-card">
         <h1 className="home-title">赛道二 具身智能数据采集与处理</h1>
-        <p className="home-subtitle">刷题训练</p>
+        <p className="home-subtitle">🔥 刷题就是力量！每一次练习都让你更强！💪</p>
         <div className="home-bank-info" style={{ marginBottom: 20 }}>
           <span>题库 {total} 题</span>
           <span className="home-bank-progress">已刷 {doneCount}/{total}</span>
