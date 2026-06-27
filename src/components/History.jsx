@@ -1,8 +1,18 @@
-export default function History({ history, total, passScore, onHome, onClearHistory }) {
-  const avg = history.length > 0
-    ? Math.round(history.reduce((s, r) => s + r.score, 0) / history.length)
+export default function History({ history, total, passScore, onHome, onClearHistory, onDeleteEntry }) {
+  // Filter display: exclude wrong-mode entries. Keep track of original index for delete.
+  const displayWithIdx = history
+    .map((r, origIdx) => ({ ...r, _origIdx: origIdx }))
+    .filter(r => !r.isWrong)
+
+  const displayHistory = displayWithIdx.map(r => {
+    const { _origIdx, ...rest } = r
+    return rest
+  })
+
+  const avg = displayHistory.length > 0
+    ? Math.round(displayHistory.reduce((s, r) => s + r.score, 0) / displayHistory.length)
     : 0
-  const passed = history.filter(r => r.score >= passScore).length
+  const passed = displayHistory.filter(r => r.score >= passScore).length
 
   // Chart dimensions
   const pad = { top: 20, right: 20, bottom: 40, left: 40 }
@@ -11,8 +21,8 @@ export default function History({ history, total, passScore, onHome, onClearHist
   const cw = w - pad.left - pad.right
   const ch = h - pad.top - pad.bottom
 
-  const points = history.map((r, i) => ({
-    x: pad.left + (history.length > 1 ? (i / (history.length - 1)) * cw : cw / 2),
+  const points = displayHistory.map((r, i) => ({
+    x: pad.left + (displayHistory.length > 1 ? (i / (displayHistory.length - 1)) * cw : cw / 2),
     y: pad.top + ch - (r.score / 100) * ch,
     score: r.score,
     date: r.date
@@ -25,7 +35,7 @@ export default function History({ history, total, passScore, onHome, onClearHist
 
   // Y-axis ticks
   const yTicks = [0, 25, 50, 75, 100]
-  const xTicks = history.length <= 10 ? history.map((_, i) => i + 1) : null
+  const xTicks = displayHistory.length <= 10 ? displayHistory.map((_, i) => i + 1) : null
 
   return (
     <div className="history-page">
@@ -33,7 +43,7 @@ export default function History({ history, total, passScore, onHome, onClearHist
         <button className="btn btn-secondary" onClick={onHome}>← 返回首页</button>
         <h2>历史成绩（仅模拟考试）</h2>
         <div>
-          {history.length > 0 && (
+          {displayHistory.length > 0 && (
             <button className="btn btn-reset-wrong" onClick={onClearHistory} title="清空所有历史成绩">
               🗑️ 清空记录
             </button>
@@ -45,7 +55,7 @@ export default function History({ history, total, passScore, onHome, onClearHist
         {/* Stats summary */}
         <div className="history-summary animate-in">
           <div className="history-stat">
-            <span className="history-stat-num">{history.length}</span>
+            <span className="history-stat-num">{displayHistory.length}</span>
             <span className="history-stat-label">考试次数</span>
           </div>
           <div className="history-stat">
@@ -57,13 +67,13 @@ export default function History({ history, total, passScore, onHome, onClearHist
             <span className="history-stat-label">及格次数</span>
           </div>
           <div className="history-stat">
-            <span className="history-stat-num orange">{Math.round((history.length > 0 ? passed / history.length : 0) * 100)}%</span>
+            <span className="history-stat-num orange">{Math.round((displayHistory.length > 0 ? passed / displayHistory.length : 0) * 100)}%</span>
             <span className="history-stat-label">及格率</span>
           </div>
         </div>
 
         {/* Chart */}
-        {history.length >= 2 && (
+        {displayHistory.length >= 2 && (
           <div className="history-chart animate-in" style={{ animationDelay: '0.1s' }}>
             <h3 className="chart-title">成绩走势</h3>
             <svg viewBox={`0 0 ${w} ${h}`} className="chart-svg">
@@ -111,9 +121,9 @@ export default function History({ history, total, passScore, onHome, onClearHist
         )}
 
         {/* Table */}
-        <div className="history-table-wrap animate-in" style={history.length >= 2 ? { animationDelay: '0.15s' } : {}}>
+        <div className="history-table-wrap animate-in" style={displayHistory.length >= 2 ? { animationDelay: '0.15s' } : {}}>
           <h3 className="chart-title">考试记录</h3>
-          {history.length === 0 ? (
+          {displayHistory.length === 0 ? (
             <div className="history-empty">暂无考试记录，快去刷题吧！</div>
           ) : (
             <table className="history-table">
@@ -125,17 +135,16 @@ export default function History({ history, total, passScore, onHome, onClearHist
                   <th>题数</th>
                   <th>成绩</th>
                   <th>结果</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                {[...history].reverse().map((r, i) => (
-                  <tr key={i} className={r.score >= passScore ? 'row-passed' : 'row-failed'}>
-                    <td className="td-idx">{history.length - i}</td>
+                {[...displayWithIdx].reverse().map((r, i) => (
+                  <tr key={r._origIdx} className={r.score >= passScore ? 'row-passed' : 'row-failed'}>
+                    <td className="td-idx">{displayHistory.length - i}</td>
                     <td className="td-date">{r.date}</td>
                     <td>
-                      <span className={`history-type-tag ${r.isWrong ? 'tag-wrong' : 'tag-normal'}`}>
-                        {r.isWrong ? '错题重练' : '模拟考试'}
-                      </span>
+                      <span className="history-type-tag tag-normal">模拟考试</span>
                     </td>
                     <td>{r.total}</td>
                     <td className="td-score">{r.score}分</td>
@@ -143,6 +152,15 @@ export default function History({ history, total, passScore, onHome, onClearHist
                       <span className={`history-result ${r.score >= passScore ? 'res-pass' : 'res-fail'}`}>
                         {r.score >= passScore ? '及格' : '不及格'}
                       </span>
+                    </td>
+                    <td>
+                      <button
+                        className="btn-delete-entry"
+                        onClick={() => onDeleteEntry(r._origIdx)}
+                        title="删除此条记录"
+                      >
+                        ✕
+                      </button>
                     </td>
                   </tr>
                 ))}

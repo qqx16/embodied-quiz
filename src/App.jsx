@@ -163,6 +163,11 @@ export default function App() {
     setExamHistory([])
   }, [])
 
+  // 删除单条历史成绩
+  const deleteHistoryEntry = useCallback((index) => {
+    setExamHistory(prev => prev.filter((_, i) => i !== index))
+  }, [])
+
   // 过滤掉错题训练记录（兼容旧数据）
   const normalHistory = useMemo(() => examHistory.filter(r => !r.isWrong), [examHistory])
 
@@ -332,11 +337,12 @@ export default function App() {
     return (<>
       <ParticleEffect />
       <History
-        history={normalHistory}
+        history={examHistory}
         total={100}
         passScore={PASS_SCORE}
         onHome={goHome}
         onClearHistory={clearHistory}
+        onDeleteEntry={deleteHistoryEntry}
       />
     </>)
   }

@@ -926,6 +926,19 @@ body {
 .tag-normal { background: #dbeafe; color: #2563eb; }
 .tag-wrong { background: #ffedd5; color: #c2410c; }
 
+.btn-delete-entry {
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  font-size: .9rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all var(--transition);
+  line-height: 1;
+}
+.btn-delete-entry:hover { color: #ef4444; background: #fee2e2; }
+
 .history-result {
   font-size: .82rem;
   font-weight: 600;
