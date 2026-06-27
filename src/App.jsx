@@ -102,6 +102,17 @@ export default function App() {
     setPage('exam')
   }, [])
 
+  // 刷题库：全部题目
+  const startBankExam = useCallback(() => {
+    const pool = shuffle(allQuestions)
+    setQuestions(pool)
+    setAnswers({})
+    setMarked(new Set())
+    setScore(0)
+    setIsWrongMode(false)
+    setPage('exam')
+  }, [])
+
   const submitExam = useCallback(() => {
     let correct = 0
     const newWrongs = new Set(wrongSet)
@@ -446,10 +457,10 @@ export default function App() {
         favCount={favoritesSet.size}
         doneCount={doneSet.size}
         onStart={startExam}
+        onBankExam={startBankExam}
         onWrongExam={startWrongExam}
         onResetWrong={resetWrongSet}
         onFavorites={goFavorites}
-        onQuestionBank={() => setPage('questionBank')}
         onHome={goHome}
       />
     </>)

@@ -1,4 +1,4 @@
-export default function Practice({ total, examSize, wrongCount, favCount, doneCount, onStart, onWrongExam, onResetWrong, onFavorites, onQuestionBank, onHome }) {
+export default function Practice({ total, examSize, wrongCount, favCount, doneCount, onStart, onBankExam, onWrongExam, onResetWrong, onFavorites, onHome }) {
   return (
     <div className="home-page">
       <div className="home-card">
@@ -13,8 +13,8 @@ export default function Practice({ total, examSize, wrongCount, favCount, doneCo
           <button className="btn btn-primary btn-start" onClick={onStart}>
             📝 模拟答题（{examSize}题随机）
           </button>
-          <button className="btn btn-qbank" onClick={onQuestionBank}>
-            📚 刷题库
+          <button className="btn btn-qbank" onClick={onBankExam}>
+            📚 刷题库（{total}题）
           </button>
           <button className="btn btn-wrong" onClick={onWrongExam} disabled={wrongCount === 0}>
             🔄 错题重练（{wrongCount} 题）
