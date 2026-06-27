@@ -5,14 +5,16 @@ import Result from './components/Result'
 import Review from './components/Review'
 import History from './components/History'
 import Favorites from './components/Favorites'
+import QuestionBank from './components/QuestionBank'
 import ParticleEffect from './components/ParticleEffect'
 import allQuestions from './data/questions.json'
 
-const TOTAL_QUESTIONS = 100
+const EXAM_SIZE = 100
 const PASS_SCORE = 60
 const WRONG_STORAGE_KEY = 'exam_wrong_questions'
 const HISTORY_STORAGE_KEY = 'exam_history'
 const FAVORITES_STORAGE_KEY = 'exam_favorites'
+const DONE_STORAGE_KEY = 'exam_done_questions'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -47,6 +49,14 @@ function saveHistory(h) {
   localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(h))
 }
 
+function loadDoneSet() {
+  try { return new Set(JSON.parse(localStorage.getItem(DONE_STORAGE_KEY) || '[]')) }
+  catch { return new Set() }
+}
+function saveDoneSet(s) {
+  localStorage.setItem(DONE_STORAGE_KEY, JSON.stringify([...s]))
+}
+
 function recordScore(history, score, total, isWrong) {
   const now = new Date()
   const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
@@ -71,14 +81,17 @@ export default function App() {
   const [favQuestions, setFavQuestions] = useState([])
   const [favAnswers, setFavAnswers] = useState({})
   const [favScore, setFavScore] = useState(0)
+  // 已答题追踪
+  const [doneSet, setDoneSet] = useState(loadDoneSet)
 
   useEffect(() => { saveWrongSet(wrongSet) }, [wrongSet])
   useEffect(() => { saveHistory(examHistory) }, [examHistory])
   useEffect(() => { saveFavoritesSet(favoritesSet) }, [favoritesSet])
+  useEffect(() => { saveDoneSet(doneSet) }, [doneSet])
 
   const startExam = useCallback(() => {
-    const pool = allQuestions.length > TOTAL_QUESTIONS
-      ? shuffle(allQuestions).slice(0, TOTAL_QUESTIONS)
+    const pool = allQuestions.length > EXAM_SIZE
+      ? shuffle(allQuestions).slice(0, EXAM_SIZE)
       : shuffle(allQuestions)
     setQuestions(pool)
     setAnswers({})
@@ -102,12 +115,16 @@ export default function App() {
       }
     })
     setWrongSet(newWrongs)
+    // Mark all questions as done
+    const newDone = new Set(doneSet)
+    questions.forEach(q => newDone.add(q.n))
+    setDoneSet(newDone)
     const totalQ = questions.length
     const raw = totalQ > 0 ? Math.round((correct / totalQ) * 100) : 0
     setScore(raw)
     setExamHistory(recordScore(examHistory, raw, totalQ, false))
     setPage('result')
-  }, [questions, answers, wrongSet, examHistory])
+  }, [questions, answers, wrongSet, doneSet, examHistory])
 
   // Start wrong-question exam
   const startWrongExam = useCallback(() => {
@@ -224,10 +241,12 @@ export default function App() {
     return (<>
       <ParticleEffect />
       <Home
-        total={100}
+        total={allQuestions.length}
+        examSize={EXAM_SIZE}
         passScore={PASS_SCORE}
         wrongCount={wrongSet.size}
         favCount={favoritesSet.size}
+        doneCount={doneSet.size}
         historyCount={normalHistory.length}
         onStart={startExam}
         onWrongExam={startWrongExam}
@@ -235,6 +254,7 @@ export default function App() {
         onHistory={goHistory}
         onFavorites={goFavorites}
         onImportData={importData}
+        onQuestionBank={() => setPage('questionBank')}
       />
     </>)
   }
@@ -338,7 +358,7 @@ export default function App() {
       <ParticleEffect />
       <History
         history={examHistory}
-        total={100}
+        total={allQuestions.length}
         passScore={PASS_SCORE}
         onHome={goHome}
         onClearHistory={clearHistory}
@@ -403,6 +423,20 @@ export default function App() {
         answers={favAnswers}
         onHome={goHome}
         favoritesSet={favoritesSet}
+        onToggleFavorite={toggleFavorite}
+      />
+    </>)
+  }
+
+  if (page === 'questionBank') {
+    return (<>
+      <ParticleEffect />
+      <QuestionBank
+        allQuestions={allQuestions}
+        doneSet={doneSet}
+        wrongSet={wrongSet}
+        favoritesSet={favoritesSet}
+        onHome={goHome}
         onToggleFavorite={toggleFavorite}
       />
     </>)

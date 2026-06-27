@@ -1,4 +1,4 @@
-export default function Home({ total, passScore, wrongCount, favCount, historyCount, onStart, onWrongExam, onResetWrong, onHistory, onFavorites, onImportData }) {
+export default function Home({ total, examSize, passScore, wrongCount, favCount, doneCount, historyCount, onStart, onWrongExam, onResetWrong, onHistory, onFavorites, onQuestionBank, onImportData }) {
   // 导出数据
   const handleExport = () => {
     const data = {
@@ -38,19 +38,22 @@ export default function Home({ total, passScore, wrongCount, favCount, historyCo
         <div className="home-info">
           <div className="info-item">
             <span className="info-icon">📝</span>
-            <span>共 {total} 题（随机抽取）</span>
+            <span>题库共 {total} 题（抽 {examSize} 题）</span>
+          </div>
+          <div className="info-item">
+            <span className="info-icon">📊</span>
+            <span>已刷 {doneCount}/{total} 题</span>
           </div>
           <div className="info-item">
             <span className="info-icon">💯</span>
-            <span>满分 100 分</span>
-          </div>
-          <div className="info-item">
-            <span className="info-icon">✅</span>
-            <span>及格 {passScore} 分</span>
+            <span>满分 100 分 · 及格 {passScore}</span>
           </div>
         </div>
         <button className="btn btn-primary btn-start" onClick={onStart}>
-          开始答题
+          开始答题（{examSize}题）
+        </button>
+        <button className="btn btn-qbank" onClick={onQuestionBank} style={{ marginTop: 12 }}>
+          📚 题库浏览
         </button>
         {wrongCount > 0 && (
           <button className="btn btn-wrong" onClick={onWrongExam} style={{ marginTop: 12 }}>
