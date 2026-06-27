@@ -87,6 +87,8 @@ export default function App() {
   const [favScore, setFavScore] = useState(0)
   // 已答题追踪
   const [doneSet, setDoneSet] = useState(loadDoneSet)
+  // 是否是刷题库模式（不计入历史成绩）
+  const [isBankMode, setIsBankMode] = useState(false)
 
   useEffect(() => { saveWrongSet(wrongSet) }, [wrongSet])
   useEffect(() => { saveHistory(examHistory) }, [examHistory])
@@ -101,16 +103,18 @@ export default function App() {
     setAnswers({})
     setMarked(new Set())
     setScore(0)
+    setIsBankMode(false)
     setPage('exam')
   }, [])
 
-  // 刷题库：全部题目
+  // 刷题库：全部题目（不计入历史成绩）
   const startBankExam = useCallback(() => {
     const pool = shuffle(allQuestions)
     setQuestions(pool)
     setAnswers({})
     setMarked(new Set())
     setScore(0)
+    setIsBankMode(true)
     setPage('exam')
   }, [])
 
@@ -135,9 +139,11 @@ export default function App() {
     const totalQ = questions.length
     const raw = totalQ > 0 ? Math.round((correct / totalQ) * 100) : 0
     setScore(raw)
-    setExamHistory(recordScore(examHistory, raw, totalQ, false))
+    if (!isBankMode) {
+      setExamHistory(recordScore(examHistory, raw, totalQ, false))
+    }
     setPage('result')
-  }, [questions, answers, wrongSet, doneSet, examHistory])
+  }, [questions, answers, wrongSet, doneSet, examHistory, isBankMode])
 
   // Start wrong-question exam
   const startWrongExam = useCallback(() => {
@@ -232,6 +238,11 @@ export default function App() {
   const goHome = useCallback(() => setPage('home'), [])
   const goHistory = useCallback(() => setPage('history'), [])
 
+  // 重置刷题进度
+  const resetDoneSet = useCallback(() => {
+    setDoneSet(new Set())
+  }, [])
+
   // 导入数据：从 JSON 文件恢复所有 localStorage 数据
   const importData = useCallback((jsonStr) => {
     try {
@@ -274,6 +285,7 @@ export default function App() {
         marked={marked}
         setMarked={setMarked}
         onSubmit={submitExam}
+        onHome={goHome}
         favoritesSet={favoritesSet}
         onToggleFavorite={toggleFavorite}
       />
@@ -460,6 +472,7 @@ export default function App() {
         onBankExam={startBankExam}
         onWrongExam={startWrongExam}
         onResetWrong={resetWrongSet}
+        onResetDone={resetDoneSet}
         onFavorites={goFavorites}
         onHome={goHome}
       />

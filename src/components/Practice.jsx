@@ -1,4 +1,4 @@
-export default function Practice({ total, examSize, wrongCount, favCount, doneCount, onStart, onBankExam, onWrongExam, onResetWrong, onFavorites, onHome }) {
+export default function Practice({ total, examSize, wrongCount, favCount, doneCount, onStart, onBankExam, onWrongExam, onResetWrong, onResetDone, onFavorites, onHome }) {
   return (
     <div className="home-page">
       <div className="home-card">
@@ -25,14 +25,21 @@ export default function Practice({ total, examSize, wrongCount, favCount, doneCo
         </div>
 
         <button className="btn btn-secondary" onClick={onHome}>
-            ← 返回首页
-          </button>
+          ← 返回首页
+        </button>
 
-        {wrongCount > 0 && (
-          <button className="btn btn-reset-wrong" onClick={onResetWrong} title="清空所有错题记录" style={{ marginTop: 8 }}>
-            🗑️ 重置错题
-          </button>
-        )}
+        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+          {wrongCount > 0 && (
+            <button className="btn btn-reset-wrong" onClick={onResetWrong} title="清空所有错题记录" style={{ flex: 1 }}>
+              🗑️ 重置错题
+            </button>
+          )}
+          {doneCount > 0 && (
+            <button className="btn btn-reset-wrong" onClick={onResetDone} title="清空刷题进度" style={{ flex: 1 }}>
+              🔄 重置进度
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )
