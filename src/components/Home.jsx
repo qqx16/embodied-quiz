@@ -1,5 +1,4 @@
 export default function Home({ total, doneCount, historyCount, onPractice, onQuestionBank, onHistory, onImportData }) {
-  // 导出数据
   const handleExport = () => {
     const data = {
       wrongSet: [...new Set(JSON.parse(localStorage.getItem('exam_wrong_questions') || '[]'))],
@@ -16,7 +15,6 @@ export default function Home({ total, doneCount, historyCount, onPractice, onQue
     URL.revokeObjectURL(url)
   }
 
-  // 导入数据
   const handleImport = (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -33,27 +31,26 @@ export default function Home({ total, doneCount, historyCount, onPractice, onQue
   return (
     <div className="home-page">
       <div className="home-card">
-        <h1 className="home-title">赛道二 具身智能数据采集与处理</h1>
-        <p className="home-subtitle">🔥 刷题就是力量！每一次练习都让你更强！💪</p>
-        <div className="home-bank-info" style={{ marginBottom: 20 }}>
-          <span>题库 {total} 题</span>
-          <span className="home-bank-progress">已刷 {doneCount}/{total}</span>
+        <div className="home-motd">★ KEEP GOING! ★</div>
+        <h1 className="home-title">赛道二 · 具身智能数据采集与处理</h1>
+        <div className="home-badge-row">
+          <span className="home-badge">📚 {total} 题题库</span>
+          <span className="home-badge">✅ 已刷 {doneCount}</span>
+          <span className="home-badge">🏆 满分100</span>
         </div>
         <button className="btn btn-primary btn-start" onClick={onPractice}>
-          📝 刷题训练
+          ▶ 刷题训练
         </button>
-        <button className="btn btn-qbank" onClick={onQuestionBank}>
-          📚 浏览题库
+        <button className="btn btn-bank" onClick={onQuestionBank}>
+          🔍 浏览题库
         </button>
         <button className="btn btn-secondary" onClick={onHistory}>
-          📊 历史成绩{historyCount > 0 ? `（${historyCount}次）` : ''}
+          📊 历史成绩{historyCount > 0 ? ` · ${historyCount}次` : ''}
         </button>
         <div className="home-data-mgmt">
-          <button className="btn-data" onClick={handleExport}>
-            📥 导出数据
-          </button>
+          <button className="btn-data" onClick={handleExport}>📥 导出</button>
           <label className="btn-data">
-            📤 导入数据
+            📤 导入
             <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
           </label>
         </div>
