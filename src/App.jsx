@@ -198,6 +198,23 @@ export default function App() {
   const goHome = useCallback(() => setPage('home'), [])
   const goHistory = useCallback(() => setPage('history'), [])
 
+  // 导入数据：从 JSON 文件恢复所有 localStorage 数据
+  const importData = useCallback((jsonStr) => {
+    try {
+      const data = JSON.parse(jsonStr)
+      if (data.wrongSet && Array.isArray(data.wrongSet)) {
+        setWrongSet(new Set(data.wrongSet))
+      }
+      if (data.favoritesSet && Array.isArray(data.favoritesSet)) {
+        setFavoritesSet(new Set(data.favoritesSet))
+      }
+      if (data.examHistory && Array.isArray(data.examHistory)) {
+        setExamHistory(data.examHistory)
+      }
+      return true
+    } catch { return false }
+  }, [])
+
   if (page === 'home') {
     return (<>
       <ParticleEffect />
@@ -212,6 +229,7 @@ export default function App() {
         onResetWrong={resetWrongSet}
         onHistory={goHistory}
         onFavorites={goFavorites}
+        onImportData={importData}
       />
     </>)
   }
