@@ -166,6 +166,8 @@ body {
   width: 100%;
 }
 .btn-wrong:hover { background: linear-gradient(135deg, #d97706, #ea580c); }
+.btn-wrong:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-wrong:disabled:hover { background: linear-gradient(135deg, #f59e0b, #f97316); }
 
 .btn-reset-wrong {
   background: var(--color-border);
@@ -969,6 +971,8 @@ body {
   width: 100%;
 }
 .btn-fav-exam:hover { background: linear-gradient(135deg, #d97706, #f59e0b); }
+.btn-fav-exam:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-fav-exam:disabled:hover { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
 
 .favorites-page {
   max-width: 900px;
