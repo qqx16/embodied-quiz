@@ -3,8 +3,8 @@ export default function Result({ score, passScore, total, questions, answers, wr
 
   let correctCount = 0
   questions.forEach((q, i) => {
-    const userAns = (answers[i] || []).slice().sort().join(',')
-    const correctAns = (q.ca || []).slice().sort().join(',')
+    const userAns = [...new Set(answers[i] || [])].sort().join(',')
+    const correctAns = [...new Set(q.ca || [])].sort().join(',')
     if (userAns === correctAns) correctCount++
   })
   const wrongCountThis = total - correctCount

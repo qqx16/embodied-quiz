@@ -17,6 +17,10 @@ const HISTORY_STORAGE_KEY = 'exam_history'
 const FAVORITES_STORAGE_KEY = 'exam_favorites'
 const DONE_STORAGE_KEY = 'exam_done_questions'
 
+function normalizeAns(arr) {
+  return [...new Set(arr || [])].sort().join(',')
+}
+
 function shuffle(arr) {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
@@ -75,7 +79,6 @@ export default function App() {
   const [wrongQuestions, setWrongQuestions] = useState([])
   const [wrongAnswers, setWrongAnswers] = useState({})
   const [wrongScore, setWrongScore] = useState(0)
-  const [isWrongMode, setIsWrongMode] = useState(false)
   const [examHistory, setExamHistory] = useState(loadHistory)
   const [favoritesSet, setFavoritesSet] = useState(loadFavoritesSet)
   // Favorites exam state
@@ -98,7 +101,6 @@ export default function App() {
     setAnswers({})
     setMarked(new Set())
     setScore(0)
-    setIsWrongMode(false)
     setPage('exam')
   }, [])
 
@@ -109,7 +111,6 @@ export default function App() {
     setAnswers({})
     setMarked(new Set())
     setScore(0)
-    setIsWrongMode(false)
     setPage('exam')
   }, [])
 
@@ -117,8 +118,8 @@ export default function App() {
     let correct = 0
     const newWrongs = new Set(wrongSet)
     questions.forEach((q, i) => {
-      const userAns = [...new Set(answers[i] || [])].sort().join(',')
-      const correctAns = [...new Set(q.ca || [])].sort().join(',')
+      const userAns = normalizeAns(answers[i])
+      const correctAns = normalizeAns(q.ca || [])
       if (userAns === correctAns) {
         correct++
         newWrongs.delete(q.n) // remove from wrong set if now correct
@@ -146,7 +147,6 @@ export default function App() {
     setWrongQuestions(pool)
     setWrongAnswers({})
     setWrongScore(0)
-    setIsWrongMode(true)
     setPage('wrongExam')
   }, [wrongSet])
 
@@ -155,8 +155,8 @@ export default function App() {
     let correct = 0
     const newWrongs = new Set(wrongSet)
     wrongQuestions.forEach((q, i) => {
-      const userAns = [...new Set(wrongAnswers[i] || [])].sort().join(',')
-      const correctAns = [...new Set(q.ca || [])].sort().join(',')
+      const userAns = normalizeAns(wrongAnswers[i])
+      const correctAns = normalizeAns(q.ca || [])
       if (userAns === correctAns) {
         correct++
         newWrongs.delete(q.n)
@@ -217,8 +217,8 @@ export default function App() {
   const submitFavExam = useCallback(() => {
     let correct = 0
     favQuestions.forEach((q, i) => {
-      const userAns = [...new Set(favAnswers[i] || [])].sort().join(',')
-      const correctAns = [...new Set(q.ca || [])].sort().join(',')
+      const userAns = normalizeAns(favAnswers[i])
+      const correctAns = normalizeAns(q.ca || [])
       if (userAns === correctAns) correct++
     })
     const totalQ = favQuestions.length
