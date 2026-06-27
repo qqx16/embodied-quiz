@@ -1,4 +1,4 @@
-export default function Result({ score, passScore, total, questions, answers, onReview, onHome }) {
+export default function Result({ score, passScore, total, questions, answers, wrongCount, onReview, onHome, onWrongExam, isWrongResult, isFavResult }) {
   const passed = score >= passScore
 
   let correctCount = 0
@@ -7,7 +7,7 @@ export default function Result({ score, passScore, total, questions, answers, on
     const correctAns = (q.ca || []).slice().sort().join(',')
     if (userAns === correctAns) correctCount++
   })
-  const wrongCount = total - correctCount
+  const wrongCountThis = total - correctCount
 
   return (
     <div className="result-page">
@@ -17,7 +17,12 @@ export default function Result({ score, passScore, total, questions, answers, on
           <span className="score-total">/100</span>
         </div>
         <div className={`result-status ${passed ? 'passed' : 'failed'}`}>
-          {passed ? '🎉 恭喜及格！' : '😞 未及格，继续加油！'}
+          {isWrongResult
+            ? (passed ? '🎉 错题全部攻克！' : '继续加油，消灭错题！')
+            : isFavResult
+            ? (passed ? '🎉 收藏题目挑战成功！' : '继续加油，收藏题目再练！')
+            : (passed ? '🎉 恭喜及格！' : '😞 未及格，继续加油！')
+          }
         </div>
         <div className="result-stats">
           <div className="stat-item correct">
@@ -25,7 +30,7 @@ export default function Result({ score, passScore, total, questions, answers, on
             <span className="stat-label">正确</span>
           </div>
           <div className="stat-item wrong">
-            <span className="stat-num">{wrongCount}</span>
+            <span className="stat-num">{wrongCountThis}</span>
             <span className="stat-label">错误</span>
           </div>
           <div className="stat-item total">
@@ -34,7 +39,20 @@ export default function Result({ score, passScore, total, questions, answers, on
           </div>
         </div>
         <div className="result-actions">
-          <button className="btn btn-primary" onClick={onReview}>查看答题解析</button>
+          {!isWrongResult && !isFavResult && (
+            <button className="btn btn-primary" onClick={onReview}>查看答题解析</button>
+          )}
+          {isWrongResult && (
+            <button className="btn btn-primary" onClick={onReview}>查看错题解析</button>
+          )}
+          {isFavResult && (
+            <button className="btn btn-primary" onClick={onReview}>查看收藏题目解析</button>
+          )}
+          {wrongCount > 0 && (
+            <button className="btn btn-wrong" onClick={onWrongExam}>
+              🔄 错题重练（{wrongCount} 题）
+            </button>
+          )}
           <button className="btn btn-secondary" onClick={onHome}>返回首页</button>
         </div>
       </div>

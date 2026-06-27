@@ -1,7 +1,7 @@
 const typeLabel = { '单选题': '单选', '多选题': '多选', '判断题': '判断' }
 const typeClass = { '单选题': 'tag-single', '多选题': 'tag-multi', '判断题': 'tag-judge' }
 
-export default function QuestionCard({ question, index, answers, setAnswers, marked, setMarked }) {
+export default function QuestionCard({ question, index, answers, setAnswers, marked, setMarked, favoritesSet, onToggleFavorite }) {
   const q = question
   const selected = answers[index] || []
   const isMulti = q.tp === '多选题'
@@ -33,6 +33,15 @@ export default function QuestionCard({ question, index, answers, setAnswers, mar
       <div className="question-header">
         <span className={`type-tag ${typeClass[q.tp]}`}>{typeLabel[q.tp]}</span>
         <span className="question-num">第 {index + 1} 题</span>
+        {onToggleFavorite && (
+          <button
+            className={`btn-fav ${favoritesSet && favoritesSet.has(q.n) ? 'fav-active' : ''}`}
+            onClick={() => onToggleFavorite(q.n)}
+            title={favoritesSet && favoritesSet.has(q.n) ? '取消收藏' : '收藏此题'}
+          >
+            {favoritesSet && favoritesSet.has(q.n) ? '⭐' : '☆'}
+          </button>
+        )}
         <button
           className={`btn-mark ${marked.has(index) ? 'marked' : ''}`}
           onClick={toggleMark}

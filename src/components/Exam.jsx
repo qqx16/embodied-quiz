@@ -3,7 +3,7 @@ import QuestionCard from './QuestionCard'
 import AnswerSheet from './AnswerSheet'
 import ConfirmModal from './ConfirmModal'
 
-export default function Exam({ questions, answers, setAnswers, marked, setMarked, onSubmit }) {
+export default function Exam({ questions, answers, setAnswers, marked, setMarked, onSubmit, isWrongMode, isFavMode, favoritesSet, onToggleFavorite }) {
   const [current, setCurrent] = useState(0)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -30,6 +30,8 @@ export default function Exam({ questions, answers, setAnswers, marked, setMarked
     <div className="exam-page">
       {/* Top bar */}
       <div className="exam-topbar">
+        {isWrongMode && <span className="wrong-badge">🔄 错题重练</span>}
+        {isFavMode && <span className="wrong-badge" style={{background:'linear-gradient(135deg,#f59e0b,#fbbf24)'}}>⭐ 收藏夹答题</span>}
         <span className="exam-progress">{current + 1} / {total}</span>
         <span className="exam-stats">已答 {answeredCount} 题</span>
         <button
@@ -62,6 +64,8 @@ export default function Exam({ questions, answers, setAnswers, marked, setMarked
             setAnswers={setAnswers}
             marked={marked}
             setMarked={setMarked}
+            favoritesSet={favoritesSet}
+            onToggleFavorite={onToggleFavorite}
           />
           <div className="exam-nav">
             <button className="btn btn-nav" onClick={goPrev} disabled={current === 0}>

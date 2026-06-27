@@ -1,4 +1,4 @@
-export default function Home({ total, passScore, onStart }) {
+export default function Home({ total, passScore, wrongCount, favCount, historyCount, onStart, onWrongExam, onResetWrong, onHistory, onFavorites }) {
   return (
     <div className="home-page">
       <div className="home-card">
@@ -21,6 +21,26 @@ export default function Home({ total, passScore, onStart }) {
         <button className="btn btn-primary btn-start" onClick={onStart}>
           开始答题
         </button>
+        {wrongCount > 0 && (
+          <button className="btn btn-wrong" onClick={onWrongExam} style={{ marginTop: 12 }}>
+            🔄 错题重练（{wrongCount} 题）
+          </button>
+        )}
+        {favCount > 0 && (
+          <button className="btn btn-fav-exam" onClick={onFavorites} style={{ marginTop: 12 }}>
+            ⭐ 收藏夹（{favCount} 题）
+          </button>
+        )}
+        <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
+          <button className="btn btn-secondary" onClick={onHistory} style={{ flex: 1 }}>
+            📊 历史成绩{historyCount > 0 ? `（${historyCount}次）` : ''}
+          </button>
+          {wrongCount > 0 && (
+            <button className="btn btn-reset-wrong" onClick={onResetWrong} title="清空所有错题记录">
+              🗑️ 重置错题
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

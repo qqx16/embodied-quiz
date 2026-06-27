@@ -1,7 +1,7 @@
 const typeLabel = { '单选题': '单选', '多选题': '多选', '判断题': '判断' }
 const typeClass = { '单选题': 'tag-single', '多选题': 'tag-multi', '判断题': 'tag-judge' }
 
-export default function Review({ questions, answers, onHome }) {
+export default function Review({ questions, answers, onHome, favoritesSet, onToggleFavorite }) {
   return (
     <div className="review-page">
       <div className="review-header">
@@ -13,7 +13,7 @@ export default function Review({ questions, answers, onHome }) {
           const userAns = answers[i] || []
           const correctAns = q.ca || []
           const isCorrect =
-            userAns.slice().sort().join(',') === correctAns.slice().sort().join(',')
+            [...new Set(userAns)].sort().join(',') === [...new Set(correctAns)].sort().join(',')
 
           return (
             <div key={i} className={`review-item ${isCorrect ? 'correct' : 'wrong'}`}>
@@ -23,6 +23,16 @@ export default function Review({ questions, answers, onHome }) {
                 <span className={`review-badge ${isCorrect ? 'correct' : 'wrong'}`}>
                   {isCorrect ? '✓ 正确' : '✗ 错误'}
                 </span>
+                {onToggleFavorite && (
+                  <button
+                    className={`btn-fav ${favoritesSet && favoritesSet.has(q.n) ? 'fav-active' : ''}`}
+                    onClick={() => onToggleFavorite(q.n)}
+                    title={favoritesSet && favoritesSet.has(q.n) ? '取消收藏' : '收藏此题'}
+                    style={{ marginLeft: 'auto', fontSize: '1.2rem' }}
+                  >
+                    {favoritesSet && favoritesSet.has(q.n) ? '⭐' : '☆'}
+                  </button>
+                )}
               </div>
               <div className="review-question">{q.q}</div>
               <div className="review-options">
