@@ -1,4 +1,4 @@
-export default function Home({ total, examSize, passScore, wrongCount, favCount, doneCount, historyCount, onStart, onWrongExam, onResetWrong, onHistory, onFavorites, onQuestionBank, onImportData }) {
+export default function Home({ total, doneCount, historyCount, onPractice, onQuestionBank, onHistory, onImportData }) {
   // 导出数据
   const handleExport = () => {
     const data = {
@@ -27,7 +27,7 @@ export default function Home({ total, examSize, passScore, wrongCount, favCount,
       else alert('导入失败：文件格式不正确')
     }
     reader.readAsText(file)
-    e.target.value = '' // reset input
+    e.target.value = ''
   }
 
   return (
@@ -35,39 +35,19 @@ export default function Home({ total, examSize, passScore, wrongCount, favCount,
       <div className="home-card">
         <h1 className="home-title">赛道二 具身智能数据采集与处理</h1>
         <p className="home-subtitle">刷题训练</p>
-        <div className="home-section">
-          <div className="home-section-title">📝 刷题训练</div>
-          <div className="home-bank-info">
-            <span>题库 {total} 题</span>
-            <span className="home-bank-progress">已刷 {doneCount}/{total}</span>
-          </div>
-          <button className="btn btn-primary btn-start" onClick={onStart}>
-            📝 模拟答题（{examSize}题随机）
-          </button>
-          <button className="btn btn-qbank" onClick={onQuestionBank}>
-            📚 刷题库
-          </button>
-          <button className="btn btn-wrong" onClick={onWrongExam} disabled={wrongCount === 0}>
-            🔄 错题重练（{wrongCount} 题）
-          </button>
-          <button className="btn btn-fav-exam" onClick={onFavorites} disabled={favCount === 0}>
-            ⭐ 收藏夹（{favCount} 题）
-          </button>
+        <div className="home-bank-info" style={{ marginBottom: 20 }}>
+          <span>题库 {total} 题</span>
+          <span className="home-bank-progress">已刷 {doneCount}/{total}</span>
         </div>
-
-        <div className="home-section">
-          <div className="home-section-title">📊 记录</div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-secondary" onClick={onHistory} style={{ flex: 1 }}>
-              历史成绩{historyCount > 0 ? `（${historyCount}次）` : ''}
-            </button>
-            <button className="btn btn-reset-wrong" onClick={onResetWrong} title="清空所有错题记录" disabled={wrongCount === 0}>
-              🗑️ 重置错题
-            </button>
-          </div>
-        </div>
-
-        {/* 数据导入导出 */}
+        <button className="btn btn-primary btn-start" onClick={onPractice}>
+          📝 刷题训练
+        </button>
+        <button className="btn btn-qbank" onClick={onQuestionBank} style={{ marginTop: 12 }}>
+          📚 浏览题库
+        </button>
+        <button className="btn btn-secondary" onClick={onHistory} style={{ marginTop: 12 }}>
+          📊 历史成绩{historyCount > 0 ? `（${historyCount}次）` : ''}
+        </button>
         <div className="home-data-mgmt">
           <button className="btn-data" onClick={handleExport}>
             📥 导出数据

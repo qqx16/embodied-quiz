@@ -6,6 +6,7 @@ import Review from './components/Review'
 import History from './components/History'
 import Favorites from './components/Favorites'
 import QuestionBank from './components/QuestionBank'
+import Practice from './components/Practice'
 import ParticleEffect from './components/ParticleEffect'
 import allQuestions from './data/questions.json'
 
@@ -242,19 +243,12 @@ export default function App() {
       <ParticleEffect />
       <Home
         total={allQuestions.length}
-        examSize={EXAM_SIZE}
-        passScore={PASS_SCORE}
-        wrongCount={wrongSet.size}
-        favCount={favoritesSet.size}
         doneCount={doneSet.size}
         historyCount={normalHistory.length}
-        onStart={startExam}
-        onWrongExam={startWrongExam}
-        onResetWrong={resetWrongSet}
-        onHistory={goHistory}
-        onFavorites={goFavorites}
-        onImportData={importData}
+        onPractice={() => setPage('practice')}
         onQuestionBank={() => setPage('questionBank')}
+        onHistory={goHistory}
+        onImportData={importData}
       />
     </>)
   }
@@ -438,6 +432,25 @@ export default function App() {
         favoritesSet={favoritesSet}
         onHome={goHome}
         onToggleFavorite={toggleFavorite}
+      />
+    </>)
+  }
+
+  if (page === 'practice') {
+    return (<>
+      <ParticleEffect />
+      <Practice
+        total={allQuestions.length}
+        examSize={EXAM_SIZE}
+        wrongCount={wrongSet.size}
+        favCount={favoritesSet.size}
+        doneCount={doneSet.size}
+        onStart={startExam}
+        onWrongExam={startWrongExam}
+        onResetWrong={resetWrongSet}
+        onFavorites={goFavorites}
+        onQuestionBank={() => setPage('questionBank')}
+        onHome={goHome}
       />
     </>)
   }
