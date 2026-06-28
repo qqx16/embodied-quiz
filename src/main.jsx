@@ -5,6 +5,6 @@ import './styles/index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <div style={{padding:40,fontSize:30,fontWeight:'bold',color:'red'}}>✅ Hello World - 具身智能刷题训练</div>
   </React.StrictMode>,
 )
