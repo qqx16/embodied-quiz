@@ -98,6 +98,12 @@ export default function App() {
   useEffect(() => { saveFavoritesSet(favoritesSet) }, [favoritesSet])
   useEffect(() => { saveDoneSet(doneSet) }, [doneSet])
 
+  // 保存刷题库进度
+  const saveBankProgress = useCallback((ans, idx) => {
+    localStorage.setItem(BANK_A_KEY, JSON.stringify(ans))
+    localStorage.setItem(BANK_I_KEY, String(idx))
+  }, [])
+
   // Auto-save bank exam progress
   useEffect(() => {
     if (isBankMode && page === 'exam') {
@@ -150,11 +156,6 @@ export default function App() {
   }, [])
 
   // 保存刷题库进度
-  const saveBankProgress = useCallback((ans, idx) => {
-    localStorage.setItem(BANK_A_KEY, JSON.stringify(ans))
-    localStorage.setItem(BANK_I_KEY, String(idx))
-  }, [])
-
   const submitExam = useCallback(() => {
     let correct = 0
     const newWrongs = new Set(wrongSet)
