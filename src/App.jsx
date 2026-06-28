@@ -92,6 +92,8 @@ export default function App() {
   const [doneSet, setDoneSet] = useState(loadDoneSet)
   // 是否是刷题库模式（不计入历史成绩）
   const [isBankMode, setIsBankMode] = useState(false)
+  // 刷题库当前题目索引
+  const [bankIndex, setBankIndex] = useState(0)
 
   useEffect(() => { saveWrongSet(wrongSet) }, [wrongSet])
   useEffect(() => { saveHistory(examHistory) }, [examHistory])
@@ -107,9 +109,9 @@ export default function App() {
   // Auto-save bank exam progress
   useEffect(() => {
     if (isBankMode && page === 'exam') {
-      saveBankProgress(answers, 0)
+      saveBankProgress(answers, bankIndex)
     }
-  }, [answers, isBankMode, page, saveBankProgress])
+  }, [answers, bankIndex, isBankMode, page, saveBankProgress])
 
   const startExam = useCallback(() => {
     const singles = shuffle(allQuestions.filter(q => q.tp === '单选题')).slice(0, 50)
@@ -134,6 +136,7 @@ export default function App() {
     setAnswers({})
     setMarked(new Set())
     setScore(0)
+    setBankIndex(0)
     setIsBankMode(true)
     setPage('exam')
   }, [])
@@ -147,6 +150,7 @@ export default function App() {
       const savedI = parseInt(localStorage.getItem(BANK_I_KEY) || '0')
       setQuestions(saved)
       setAnswers(savedA)
+      setBankIndex(savedI)
       setMarked(new Set())
       setScore(0)
       setIsBankMode(true)
@@ -291,6 +295,12 @@ export default function App() {
   const goHome = useCallback(() => setPage('home'), [])
   const goHistory = useCallback(() => setPage('history'), [])
 
+  // 刷题库：保存并退出
+  const quitBankAndSave = useCallback(() => {
+    saveBankProgress(answers, bankIndex)
+    setPage('home')
+  }, [answers, bankIndex, saveBankProgress])
+
   // 重置刷题进度
   const resetDoneSet = useCallback(() => {
     setDoneSet(new Set())
@@ -337,8 +347,10 @@ export default function App() {
         setAnswers={setAnswers}
         marked={marked}
         setMarked={setMarked}
+        currentIndex={bankIndex}
+        setCurrentIndex={setBankIndex}
         onSubmit={submitExam}
-        onHome={goHome}
+        onHome={isBankMode ? quitBankAndSave : goHome}
         isBankMode={isBankMode}
         favoritesSet={favoritesSet}
         onToggleFavorite={toggleFavorite}

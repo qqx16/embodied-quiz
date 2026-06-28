@@ -3,8 +3,10 @@ import QuestionCard from './QuestionCard'
 import AnswerSheet from './AnswerSheet'
 import ConfirmModal from './ConfirmModal'
 
-export default function Exam({ questions, answers, setAnswers, marked, setMarked, onSubmit, onHome, isWrongMode, isFavMode, isBankMode, favoritesSet, onToggleFavorite }) {
-  const [current, setCurrent] = useState(0)
+export default function Exam({ questions, answers, setAnswers, marked, setMarked, onSubmit, onHome, isWrongMode, isFavMode, isBankMode, currentIndex, setCurrentIndex, favoritesSet, onToggleFavorite }) {
+  const [localCurrent, setLocalCurrent] = useState(currentIndex || 0)
+  const current = setCurrentIndex ? currentIndex : localCurrent
+  const setCurrent = setCurrentIndex || setLocalCurrent
   const [sheetOpen, setSheetOpen] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
