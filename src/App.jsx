@@ -245,6 +245,16 @@ export default function App() {
     setExamHistory(prev => prev.filter((_, i) => i !== index))
   }, [])
 
+  // 刷题库进度
+  const bankProgress = useMemo(() => {
+    try {
+      const q = localStorage.getItem(BANK_Q_KEY)
+      if (!q) return { has: false, answered: 0, total: 0 }
+      const a = localStorage.getItem(BANK_A_KEY)
+      return { has: true, answered: a ? Object.keys(JSON.parse(a)).length : 0, total: JSON.parse(q).length }
+    } catch { return { has: false, answered: 0, total: 0 } }
+  }, [])
+
   // 过滤掉错题训练记录（兼容旧数据）
   const normalHistory = useMemo(() => examHistory.filter(r => !r.isWrong), [examHistory])
 
@@ -511,9 +521,9 @@ export default function App() {
         wrongCount={wrongSet.size}
         favCount={favoritesSet.size}
         doneCount={doneSet.size}
-        hasBankProgress={false}
-        bankAnswered={0}
-        bankTotal={0}
+        hasBankProgress={bankProgress.has}
+        bankAnswered={bankProgress.answered}
+        bankTotal={bankProgress.total}
         onStart={startExam}
         onBankExam={startBankExam}
         onResumeBank={resumeBankExam}
