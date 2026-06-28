@@ -3,7 +3,7 @@ import QuestionCard from './QuestionCard'
 import AnswerSheet from './AnswerSheet'
 import ConfirmModal from './ConfirmModal'
 
-export default function Exam({ questions, answers, setAnswers, marked, setMarked, onSubmit, onHome, isWrongMode, isFavMode, favoritesSet, onToggleFavorite }) {
+export default function Exam({ questions, answers, setAnswers, marked, setMarked, onSubmit, onHome, isWrongMode, isFavMode, isBankMode, favoritesSet, onToggleFavorite }) {
   const [current, setCurrent] = useState(0)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -34,7 +34,7 @@ export default function Exam({ questions, answers, setAnswers, marked, setMarked
         {isFavMode && <span className="wrong-badge" style={{background:'linear-gradient(135deg,#f59e0b,#fbbf24)'}}>⭐ 收藏夹答题</span>}
         {!isWrongMode && !isFavMode && onHome && (
           <button className="btn btn-secondary" onClick={onHome} style={{ fontSize: '.8rem', padding: '4px 10px' }}>
-            ← 返回主页
+            {isBankMode ? '💾 保存并退出' : '← 返回主页'}
           </button>
         )}
         <span className="exam-progress">{current + 1} / {total}</span>

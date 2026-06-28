@@ -16,6 +16,9 @@ const WRONG_STORAGE_KEY = 'exam_wrong_questions'
 const HISTORY_STORAGE_KEY = 'exam_history'
 const FAVORITES_STORAGE_KEY = 'exam_favorites'
 const DONE_STORAGE_KEY = 'exam_done_questions'
+const BANK_Q_KEY = 'exam_bank_q'
+const BANK_A_KEY = 'exam_bank_a'
+const BANK_I_KEY = 'exam_bank_i'
 
 function normalizeAns(arr) {
   return [...new Set(arr || [])].sort().join(',')
@@ -95,10 +98,18 @@ export default function App() {
   useEffect(() => { saveFavoritesSet(favoritesSet) }, [favoritesSet])
   useEffect(() => { saveDoneSet(doneSet) }, [doneSet])
 
+  // Auto-save bank exam progress
+  useEffect(() => {
+    if (isBankMode && page === 'exam') {
+      saveBankProgress(answers, 0)
+    }
+  }, [answers, isBankMode, page, saveBankProgress])
+
   const startExam = useCallback(() => {
-    const pool = allQuestions.length > EXAM_SIZE
-      ? shuffle(allQuestions).slice(0, EXAM_SIZE)
-      : shuffle(allQuestions)
+    const singles = shuffle(allQuestions.filter(q => q.tp === '单选题')).slice(0, 50)
+    const multis = shuffle(allQuestions.filter(q => q.tp === '多选题')).slice(0, 25)
+    const judges = shuffle(allQuestions.filter(q => q.tp === '判断题')).slice(0, 25)
+    const pool = shuffle([...singles, ...multis, ...judges])
     setQuestions(pool)
     setAnswers({})
     setMarked(new Set())
@@ -110,12 +121,38 @@ export default function App() {
   // 刷题库：全部题目（不计入历史成绩）
   const startBankExam = useCallback(() => {
     const pool = shuffle(allQuestions)
+    localStorage.setItem(BANK_Q_KEY, JSON.stringify(pool))
+    localStorage.setItem(BANK_A_KEY, JSON.stringify({}))
+    localStorage.setItem(BANK_I_KEY, '0')
     setQuestions(pool)
     setAnswers({})
     setMarked(new Set())
     setScore(0)
     setIsBankMode(true)
     setPage('exam')
+  }, [])
+
+  // 继续刷题库
+  const resumeBankExam = useCallback(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(BANK_Q_KEY) || 'null')
+      if (!saved || saved.length === 0) return false
+      const savedA = JSON.parse(localStorage.getItem(BANK_A_KEY) || '{}')
+      const savedI = parseInt(localStorage.getItem(BANK_I_KEY) || '0')
+      setQuestions(saved)
+      setAnswers(savedA)
+      setMarked(new Set())
+      setScore(0)
+      setIsBankMode(true)
+      setPage('exam')
+      return true
+    } catch { return false }
+  }, [])
+
+  // 保存刷题库进度
+  const saveBankProgress = useCallback((ans, idx) => {
+    localStorage.setItem(BANK_A_KEY, JSON.stringify(ans))
+    localStorage.setItem(BANK_I_KEY, String(idx))
   }, [])
 
   const submitExam = useCallback(() => {
@@ -141,6 +178,11 @@ export default function App() {
     setScore(raw)
     if (!isBankMode) {
       setExamHistory(recordScore(examHistory, raw, totalQ, false))
+    } else {
+      // Clear bank progress on submit
+      localStorage.removeItem(BANK_Q_KEY)
+      localStorage.removeItem(BANK_A_KEY)
+      localStorage.removeItem(BANK_I_KEY)
     }
     setPage('result')
   }, [questions, answers, wrongSet, doneSet, examHistory, isBankMode])
@@ -286,6 +328,7 @@ export default function App() {
         setMarked={setMarked}
         onSubmit={submitExam}
         onHome={goHome}
+        isBankMode={isBankMode}
         favoritesSet={favoritesSet}
         onToggleFavorite={toggleFavorite}
       />
@@ -468,8 +511,10 @@ export default function App() {
         wrongCount={wrongSet.size}
         favCount={favoritesSet.size}
         doneCount={doneSet.size}
+        hasBankProgress={!!localStorage.getItem(BANK_Q_KEY)}
         onStart={startExam}
         onBankExam={startBankExam}
+        onResumeBank={resumeBankExam}
         onWrongExam={startWrongExam}
         onResetWrong={resetWrongSet}
         onResetDone={resetDoneSet}

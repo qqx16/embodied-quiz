@@ -1,4 +1,6 @@
-export default function Practice({ total, examSize, wrongCount, favCount, doneCount, onStart, onBankExam, onWrongExam, onResetWrong, onResetDone, onFavorites, onHome }) {
+export default function Practice({ total, examSize, wrongCount, favCount, doneCount, hasBankProgress, onStart, onBankExam, onResumeBank, onWrongExam, onResetWrong, onResetDone, onFavorites, onHome }) {
+  const bankA = parseInt(localStorage.getItem('exam_bank_a') ? Object.keys(JSON.parse(localStorage.getItem('exam_bank_a') || '{}')).length : 0) || 0
+  const bankT = hasBankProgress ? JSON.parse(localStorage.getItem('exam_bank_q') || '[]').length : 0
   return (
     <div className="home-page">
       <div className="home-card">
@@ -13,9 +15,14 @@ export default function Practice({ total, examSize, wrongCount, favCount, doneCo
           <button className="btn btn-primary btn-start" onClick={onStart}>
             📝 模拟答题（{examSize}题随机）
           </button>
-          <button className="btn btn-qbank" onClick={onBankExam}>
+          <button className="btn btn-bank" onClick={onBankExam}>
             📚 刷题库（{total}题）
           </button>
+          {hasBankProgress && (
+            <button className="btn btn-bank" onClick={onResumeBank} style={{ background: '#e9c46a', color: '#1a1a1a', boxShadow: '4px 4px 0 #b8960b' }}>
+              ▶ 继续刷题（已答{bankA}/{bankT}）
+            </button>
+          )}
           <button className="btn btn-wrong" onClick={onWrongExam} disabled={wrongCount === 0}>
             🔄 错题重练（{wrongCount} 题）
           </button>
