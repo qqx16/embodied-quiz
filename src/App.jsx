@@ -512,6 +512,8 @@ export default function App() {
         favCount={favoritesSet.size}
         doneCount={doneSet.size}
         hasBankProgress={!!localStorage.getItem(BANK_Q_KEY)}
+        bankAnswered={(() => { try { return Object.keys(JSON.parse(localStorage.getItem(BANK_A_KEY) || '{}')).length } catch { return 0 } })()}
+        bankTotal={(() => { try { return JSON.parse(localStorage.getItem(BANK_Q_KEY) || '[]').length } catch { return 0 } })()}
         onStart={startExam}
         onBankExam={startBankExam}
         onResumeBank={resumeBankExam}
